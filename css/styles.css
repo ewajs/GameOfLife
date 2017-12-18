@@ -5,3 +5,15 @@ body {
 .canvas-div {
     margin: 20px;
 }
+
+.row {
+    margin: 30px;
+}
+
+.slider-number {
+    width: 10% !important;
+}
+
+.slider-bar {
+    width: 80% !important;
+}
