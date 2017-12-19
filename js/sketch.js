@@ -11,7 +11,7 @@ var grid;
 
 function setup() {
     // Canvas setup
-    var canvas = createCanvas(WIDTH, HEIGHT);
+    var canvas = createCanvas(WIDTH + 1, HEIGHT + 1);
     canvas.parent('canvas');
 
     // Grid setup
@@ -35,25 +35,39 @@ function setup() {
         yitems = floor(HEIGHT/resolution);
         grid = createGrid(xitems, yitems);
         drawGrid();
+        noLoop();
     });
 
     // Interface setup - Sliders
     var overSlider = document.getElementById('overSlider');
     var overValue = document.getElementById('overValue');
     overSlider.value = overpopulation;
+    overSlider.addEventListener('change', overpopulationListener);
     overValue.value = overpopulation;
-    bindSliderAndInput(overSlider, overValue, 'over');
+    overValue.addEventListener('change', overpopulationListener);
+
+    bindSliderAndInput(overSlider, overValue, 0, 8);
     var subSlider = document.getElementById('subSlider');
     var subValue = document.getElementById('subValue');
     subSlider.value = underpopulation;
+    subSlider.addEventListener('change', underpopulationListener);
     subValue.value = underpopulation;
-    bindSliderAndInput(subSlider, subValue, 'under');
+    subValue.addEventListener('change', underpopulationListener);
+    bindSliderAndInput(subSlider, subValue, 0, 8);
     var birthSlider = document.getElementById('birthSlider');
     var birthValue = document.getElementById('birthValue');
     birthSlider.value = revive;
+    birthSlider.addEventListener('change', birthListener);
     birthValue.value = revive;
-    bindSliderAndInput(birthSlider, birthValue, 'birth');
-
+    birthValue.addEventListener('change', birthListener);
+    bindSliderAndInput(birthSlider, birthValue, 0, 8);
+    var clockSlider = document.getElementById('clockSlider');
+    var clockValue = document.getElementById('clockValue');
+    clockSlider.value = 1;
+    clockSlider.addEventListener('change', clockListener);
+    clockValue.value = 1;
+    clockValue.addEventListener('change', clockListener);
+    bindSliderAndInput(clockSlider, clockValue, 1, 30);
 
     setTimeout(mouseCheck, 1);
     frameRate(1);
@@ -103,11 +117,11 @@ function drawGrid() {
             } else {
                 fill(0);
             }
-            if (i == xitems - 1)
-                rect(i*resolution, j*resolution, resolution-1, resolution);
-            else if (j == yitems - 1)
-                rect(i*resolution, j*resolution, resolution, resolution-1);
-            else
+            // if (i == xitems - 1)
+            //     rect(i*resolution, j*resolution, resolution-1, resolution);
+            // else if (j == yitems - 1)
+            //     rect(i*resolution, j*resolution, resolution, resolution-1);
+            // else
                 rect(i*resolution, j*resolution, resolution, resolution);
         }
     }
@@ -172,27 +186,33 @@ function mouseCheck() {
     setTimeout(mouseCheck, 1);
 }
 
-function bindSliderAndInput(slider, input, parameter) {
+function bindSliderAndInput(slider, input, min, max) {
     slider.addEventListener('change', function (){
         input.value = slider.value;
-        switch (parameter) {
-            case 'over':
-                overpopulation = slider.value;
-                break;
-            case 'under':
-                underpopulation = slider.value;
-                break;
-            case 'birth':
-                revive = slider.value;
-                break;
-        }
     });
     input.addEventListener('change', function (){
-        if (input.value < 0) {
-            input.value = 0;
-        } else if (input.value > 8) {
-            input.value = 8;
+        if (input.value < min) {
+            input.value = min;
+        } else if (input.value > max) {
+            input.value = max;
         }
         slider.value = input.value;
     });
+}
+
+function overpopulationListener () {
+    overpopulation = this.value;
+}
+
+function underpopulationListener() {
+    underpopulation = this.value;
+}
+
+function birthListener() {
+    revive = this.value;
+}
+
+function clockListener() {
+    frameRate(parseInt(this.value));
+    //console.log(this.value);
 }

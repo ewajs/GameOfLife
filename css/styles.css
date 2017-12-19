@@ -17,3 +17,12 @@ body {
 .slider-bar {
     width: 80% !important;
 }
+
+.title {
+    font-size: 60px;
+    text-align: center;
+}
+
+.clock-number {
+    width: 30% !important;
+}
