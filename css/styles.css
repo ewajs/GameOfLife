@@ -11,11 +11,12 @@ body {
 }
 
 .slider-number {
-    width: 10% !important;
+    width: 15% !important;
+    text-align: center;
 }
 
 .slider-bar {
-    width: 80% !important;
+    width: 75% !important;
 }
 
 .title {
@@ -25,4 +26,8 @@ body {
 
 .clock-number {
     width: 30% !important;
+}
+
+.full-width {
+    width: 100%;
 }

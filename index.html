@@ -7,6 +7,7 @@
     <script src="js/p5.min.js"></script>
     <script src="js/addons/p5.dom.min.js"></script>
     <script src="js/sketch.js"></script>
+    <script src="js/jscolor.min.js"></script>
   </head>
   <body>
         <h1 class="title">Game of Life</h1>
@@ -18,24 +19,29 @@
                     <a class="btn btn-default" id="pause"><span class="glyphicon glyphicon-pause"></span>&nbsp; Pausar</a>
                     <a class="btn btn-default" id="clean"><span class="glyphicon glyphicon-unchecked"></span>&nbsp; Limpiar</a>
                     <a class="btn btn-default" id="random"><span class="glyphicon glyphicon-qrcode"></span>&nbsp; Aleatorio</a>
+                    <a class="btn btn-default" id="restore"><span class="glyphicon glyphicon-repeat"></span>&nbsp; Por defecto</a>
                  </div>
               </div>
           </div>
 
           <div class="row">
-              <div class="col-xs-6 col-xs-offset-3 text-center" id="controls">
+              <div class="col-xs-4 col-xs-offset-2 text-center well" id="controls">
                  <h2>Configuración Dinámica</h2>
                  <div class="form-inline">
                      <label>Reloj del mundo (tableros/segundo)</label><br/>
-                     <input type="range" min="1" max="30" list="clockmarks" id="clockSlider" class="form-control slider-bar"/>
+                     <input type="range" min="1" max="10" list="clockmarks" id="clockSlider" class="form-control slider-bar"/>
                      <datalist id="clockmarks">
-                       <option value="1">
-                       <option value="5">
-                       <option value="10">
-                       <option value="15">
-                       <option value="20">
-                       <option value="25">
-                       <option value="30">
+                         <option value="0">
+                         <option value="1">
+                         <option value="2">
+                         <option value="3">
+                         <option value="4">
+                         <option value="5">
+                         <option value="6">
+                         <option value="7">
+                         <option value="8">
+                         <option value="9">
+                         <option value="10">
                      </datalist>
                       <input type="number" class="form-control slider-number" id ="clockValue"/>
 
@@ -67,18 +73,58 @@
                     <input type="number" class="form-control slider-number" id ="birthValue"/>
                 </div>
               </div>
-      </div>
-
-      <div class="row">
-          <div class="col-xs-10 col-xs-offset-1 text-center">
-                  <h2>Configuración Estática (reinicia la simulación)</h2>
-                <label>Resolución</label>
-                <div class="form-inline">
-                    <div class="input-group">
-                    <a class="btn btn-default input-group-addon" id="configure" href="#">Configurar</a><input type="number" value="10" id="resolution" class="form-control"><div class="input-group-addon">px</div>
+              <div class="col-xs-4 col-xs-offset-1 text-center well">
+                    <h2>Configuración Estática</h2>
+                    <div class="row">
+                        <div class="col-xs-6 text-center">
+                            <label>Tamaño</label>
+                            <div class="form-inline">
+                                <div class="input-group full-width">
+                                <input type="number" value="800" id="resolution" class="form-control text-center"><div class="input-group-addon">px</div>
+                                </div>
+                            </div>
+                            <br/>
+                            <label>Resolución</label>
+                            <div class="form-inline">
+                                <div class="input-group full-width">
+                                <input type="number" value="10" id="resolution" class="form-control text-center"><div class="input-group-addon">px/px</div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-inline">
+                                <label>Bordes</label>&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="borders" checked/>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <label>Colores</label>
+                            <div class="form-inline text-right">
+                                <strong>Vivo</strong>
+                                <button class="jscolor {valueElement:'liveColor'} form-control">
+                                    &nbsp;&nbsp;
+                                </button>
+                                <input type="hidden" id="liveColor" value="#000000">
+                            </div>
+                            <br/>
+                            <div class="form-inline text-right">
+                                <strong>Muerto</strong>
+                                <button class="jscolor {valueElement:'deadColor'} form-control">
+                                    &nbsp;&nbsp;
+                                </button>
+                                <input type="hidden" id="deadColor" value="#FFFFFF">
+                            </div>
+                            <br/>
+                            <div class="form-inline text-right">
+                                <strong>Borde</strong>
+                                <button class="jscolor {valueElement:'borderColor'} form-control">
+                                    &nbsp;&nbsp;
+                                </button>
+                                <input type="hidden" id="borderColor" value="#000000">
+                            </div>
                     </div>
-                </div>
-          </div>
+
+              </div>
+              <a class="btn btn-default" id="configure">Configurar</a>
       </div>
   </body>
 </html>

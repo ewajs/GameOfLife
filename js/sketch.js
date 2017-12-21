@@ -1,5 +1,4 @@
-var WIDTH = 1000;
-var HEIGHT = 500;
+var SIZE = 600;
 var resolution = 10;
 var underpopulation = 2;
 var overpopulation = 3;
@@ -8,16 +7,50 @@ var xitems;
 var yitems;
 var grid;
 
+var overSlider, overValue, subSlider, subValue, birthSlider, birthValue, clockSlider, clockValue;
+
 
 function setup() {
     // Canvas setup
-    var canvas = createCanvas(WIDTH + 1, HEIGHT + 1);
+    var canvas = createCanvas(SIZE + 1, SIZE + 1);
     canvas.parent('canvas');
 
     // Grid setup
-    xitems = floor(WIDTH/resolution);
-    yitems = floor(HEIGHT/resolution);
+    xitems = floor(SIZE/resolution);
+    yitems = floor(SIZE/resolution);
     grid = createGrid(xitems, yitems);
+
+    // Interface setup - Sliders
+    overSlider = document.getElementById('overSlider');
+    overValue = document.getElementById('overValue');
+    overSlider.value = overpopulation;
+    overSlider.addEventListener('change', overpopulationListener);
+    overValue.value = overpopulation;
+    overValue.addEventListener('change', overpopulationListener);
+
+    bindSliderAndInput(overSlider, overValue, 0, 8);
+    subSlider = document.getElementById('subSlider');
+    subValue = document.getElementById('subValue');
+    subSlider.value = underpopulation;
+    subSlider.addEventListener('change', underpopulationListener);
+    subValue.value = underpopulation;
+    subValue.addEventListener('change', underpopulationListener);
+    bindSliderAndInput(subSlider, subValue, 0, 8);
+    birthSlider = document.getElementById('birthSlider');
+    birthValue = document.getElementById('birthValue');
+    birthSlider.value = revive;
+    birthSlider.addEventListener('change', birthListener);
+    birthValue.value = revive;
+    birthValue.addEventListener('change', birthListener);
+    bindSliderAndInput(birthSlider, birthValue, 0, 8);
+    clockSlider = document.getElementById('clockSlider');
+    clockValue = document.getElementById('clockValue');
+    clockSlider.value = 1;
+    clockSlider.addEventListener('change', clockListener);
+    clockValue.value = 1;
+    clockValue.addEventListener('change', clockListener);
+    bindSliderAndInput(clockSlider, clockValue, 1, 30);
+
 
     // Interface setup - Buttons
     var random = document.getElementById('random');
@@ -31,43 +64,34 @@ function setup() {
     var configure = document.getElementById('configure');
     configure.addEventListener('click', function () {
         resolution = document.getElementById('resolution').value;
-        xitems = floor(WIDTH/resolution);
-        yitems = floor(HEIGHT/resolution);
+        xitems = floor(SIZE/resolution);
+        yitems = floor(SIZE/resolution);
+        grid = createGrid(xitems, yitems);
+        drawGrid();
+        noLoop();
+    });
+    var restore = document.getElementById('restore');
+    restore.addEventListener('click', function () {
+        resolution = 10;
+        underpopulation = 2;
+        overpopulation = 3;
+        revive = 3;
+        overSlider.value = overpopulation;
+        overValue.value = overpopulation;
+        subSlider.value = underpopulation;
+        subValue.value = underpopulation;
+        birthSlider.value = revive;
+        birthValue.value = revive;
+        clockValue.value = 1;
+        clockSlider.value = 1;
+        xitems = floor(SIZE/resolution);
+        yitems = floor(SIZE/resolution);
         grid = createGrid(xitems, yitems);
         drawGrid();
         noLoop();
     });
 
-    // Interface setup - Sliders
-    var overSlider = document.getElementById('overSlider');
-    var overValue = document.getElementById('overValue');
-    overSlider.value = overpopulation;
-    overSlider.addEventListener('change', overpopulationListener);
-    overValue.value = overpopulation;
-    overValue.addEventListener('change', overpopulationListener);
 
-    bindSliderAndInput(overSlider, overValue, 0, 8);
-    var subSlider = document.getElementById('subSlider');
-    var subValue = document.getElementById('subValue');
-    subSlider.value = underpopulation;
-    subSlider.addEventListener('change', underpopulationListener);
-    subValue.value = underpopulation;
-    subValue.addEventListener('change', underpopulationListener);
-    bindSliderAndInput(subSlider, subValue, 0, 8);
-    var birthSlider = document.getElementById('birthSlider');
-    var birthValue = document.getElementById('birthValue');
-    birthSlider.value = revive;
-    birthSlider.addEventListener('change', birthListener);
-    birthValue.value = revive;
-    birthValue.addEventListener('change', birthListener);
-    bindSliderAndInput(birthSlider, birthValue, 0, 8);
-    var clockSlider = document.getElementById('clockSlider');
-    var clockValue = document.getElementById('clockValue');
-    clockSlider.value = 1;
-    clockSlider.addEventListener('change', clockListener);
-    clockValue.value = 1;
-    clockValue.addEventListener('change', clockListener);
-    bindSliderAndInput(clockSlider, clockValue, 1, 30);
 
     setTimeout(mouseCheck, 1);
     frameRate(1);
