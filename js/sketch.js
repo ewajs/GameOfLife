@@ -63,7 +63,9 @@ function setup() {
     clean.addEventListener('click', cleanGrid);
     var configure = document.getElementById('configure');
     configure.addEventListener('click', function () {
-        resolution = document.getElementById('resolution').value;
+        resolution = parseInt(document.getElementById('resolution').value);
+        SIZE = parseInt(document.getElementById('size').value);
+        resizeCanvas(SIZE + 1, SIZE + 1);
         xitems = floor(SIZE/resolution);
         yitems = floor(SIZE/resolution);
         grid = createGrid(xitems, yitems);
@@ -76,6 +78,7 @@ function setup() {
         underpopulation = 2;
         overpopulation = 3;
         revive = 3;
+        SIZE = 800;
         overSlider.value = overpopulation;
         overValue.value = overpopulation;
         subSlider.value = underpopulation;
@@ -84,6 +87,7 @@ function setup() {
         birthValue.value = revive;
         clockValue.value = 1;
         clockSlider.value = 1;
+        resizeCanvas(SIZE + 1, SIZE + 1);
         xitems = floor(SIZE/resolution);
         yitems = floor(SIZE/resolution);
         grid = createGrid(xitems, yitems);
