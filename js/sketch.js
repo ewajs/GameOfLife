@@ -1,4 +1,4 @@
-var SIZE = 600;
+var SIZE = 800;
 var resolution = 10;
 var underpopulation = 2;
 var overpopulation = 3;
@@ -9,6 +9,7 @@ var grid;
 
 var overSlider, overValue, subSlider, subValue, birthSlider, birthValue, clockSlider, clockValue;
 
+var liveColor, deadColor, borderColor;
 
 function setup() {
     // Canvas setup
@@ -61,17 +62,6 @@ function setup() {
     pause.addEventListener('click', noLoop);
     var clean = document.getElementById('clean');
     clean.addEventListener('click', cleanGrid);
-    var configure = document.getElementById('configure');
-    configure.addEventListener('click', function () {
-        resolution = parseInt(document.getElementById('resolution').value);
-        SIZE = parseInt(document.getElementById('size').value);
-        resizeCanvas(SIZE + 1, SIZE + 1);
-        xitems = floor(SIZE/resolution);
-        yitems = floor(SIZE/resolution);
-        grid = createGrid(xitems, yitems);
-        drawGrid();
-        noLoop();
-    });
     var restore = document.getElementById('restore');
     restore.addEventListener('click', function () {
         resolution = 10;
@@ -95,6 +85,47 @@ function setup() {
         noLoop();
     });
 
+    // Interface setup - Size and Resolution
+    var resolutionControl = document.getElementById('resolution');
+    resolutionControl.addEventListener('blur', function() {
+        resolution = parseInt(document.getElementById('resolution').value);
+        xitems = floor(SIZE/resolution);
+        yitems = floor(SIZE/resolution);
+        grid = resizeGrid(xitems, yitems);
+        drawGrid();
+    });
+
+    var sizeControl = document.getElementById('size');
+    sizeControl.addEventListener('blur', function() {
+        SIZE = parseInt(document.getElementById('size').value);
+        xitems = floor(SIZE/resolution);
+        yitems = floor(SIZE/resolution);
+        grid = resizeGrid(xitems, yitems);
+        resizeCanvas(SIZE + 1, SIZE + 1, true);
+        drawGrid();
+    });
+
+
+
+    // Interface Setup - Color Controls
+    liveColor = "000000" // Initialize
+    var liveColorControl = document.getElementById('liveColor');
+    liveColorControl.addEventListener('change', function(){
+      liveColor = this.value;
+    });
+
+    deadColor = "FFFFFF" // Initialize
+    var deadColorControl = document.getElementById('deadColor');
+    deadColorControl.addEventListener('change', function(){
+      deadColor = this.value;
+    });
+
+    borderColor = "000000" // Initialize
+    var borderColorControl = document.getElementById('borderColor');
+    borderColorControl.addEventListener('change', function(){
+      borderColor = this.value;
+    });
+
 
 
     setTimeout(mouseCheck, 1);
@@ -104,18 +135,18 @@ function setup() {
 
 function draw() {
     drawGrid();
-    grid = computeNextGrid(grid);
+    grid = computeNextGrid();
 }
 
 function createGrid(cols, rows) {
-    var grid = new Array(cols);
+    var newGrid = new Array(cols);
     for (var i = 0; i < cols; i++) {
-        grid[i] = new Array(rows);
-        for (var j = 0; j < grid[i].length; j++) {
-            grid[i][j] = 0;
+        newGrid[i] = new Array(rows);
+        for (var j = 0; j < newGrid[i].length; j++) {
+            newGrid[i][j] = 0;
         }
     }
-    return grid;
+    return newGrid;
 }
 
 function randomGrid() {
@@ -124,7 +155,7 @@ function randomGrid() {
             grid[i][j] = floor(random()*2);
         }
     }
-    drawGrid()
+    drawGrid();
 }
 
 function cleanGrid() {
@@ -138,35 +169,51 @@ function cleanGrid() {
 
 function drawGrid() {
     clear();
+    stroke("#"+ borderColor);
     for (var i = 0; i < xitems; i++) {
         for(var j = 0; j < yitems; j++) {
             if(grid[i][j] == 0) {
-                fill(255);
+                fill("#"+deadColor);
             } else {
-                fill(0);
+                fill("#"+liveColor);
             }
-            // if (i == xitems - 1)
-            //     rect(i*resolution, j*resolution, resolution-1, resolution);
-            // else if (j == yitems - 1)
-            //     rect(i*resolution, j*resolution, resolution, resolution-1);
-            // else
-                rect(i*resolution, j*resolution, resolution, resolution);
+            rect(i*resolution, j*resolution, resolution, resolution);
         }
     }
 }
 
-function computeNextGrid(grid) {
+
+
+function computeNextGrid() {
     var nextGrid = new Array(grid.length);
     for (var i = 0; i < grid.length; i++) {
         nextGrid[i] = new Array(grid[i].length);
         for (var j = 0; j < grid[i].length; j++) {
-            nextGrid[i][j] = computeState(grid, i, j);
+            nextGrid[i][j] = computeState(i, j);
         }
     }
     return nextGrid;
 }
 
-function computeState(grid, i, j) {
+function resizeGrid(cols, rows) {
+    var nextGrid = new Array(cols);
+    var imax = grid.length;
+    var jmax = grid[0].length;
+    for (var i = 0; i < cols; i++) {
+        nextGrid[i] = new Array(rows);
+        for (var j = 0; j < rows; j++) {
+            if (i < imax && j < jmax) {
+                nextGrid[i][j] = grid[i][j];
+            } else {
+                nextGrid[i][j] = 0;
+            }
+        }
+    }
+    return nextGrid;
+
+}
+
+function computeState(i, j) {
     k = i + xitems - 1;
     l = j + yitems;
     var neighbors = 0;
@@ -203,11 +250,8 @@ function mouseCheck() {
         var j = floor(mouseY/resolution);
         if (i > 0 && j > 0 && i < xitems && j < yitems) {
             grid[i][j] = 1;
-            if(grid[i][j] == 0) {
-                fill(255);
-            } else {
-                fill(0);
-            }
+            stroke("#"+ borderColor);
+            fill("#"+liveColor);
             rect(i*resolution, j*resolution, resolution, resolution);
         }
     }
