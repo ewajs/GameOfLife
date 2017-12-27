@@ -31,3 +31,8 @@ body {
 .full-width {
     width: 100%;
 }
+
+.frame-counter {
+    width: 30px;
+    text-align: center;
+}
