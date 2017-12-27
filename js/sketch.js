@@ -9,7 +9,7 @@ var grid;
 
 var overSlider, overValue, subSlider, subValue, birthSlider, birthValue, clockSlider, clockValue;
 
-var liveColor, deadColor, borderColor;
+var liveColor, deadColor, borderColor, borderControl;
 
 function setup() {
     // Canvas setup
@@ -108,22 +108,29 @@ function setup() {
 
 
     // Interface Setup - Color Controls
+    borderControl = document.getElementById('border');
+    borderControl.addEventListener('change', function () {
+        drawGrid();
+    })
     liveColor = "000000" // Initialize
     var liveColorControl = document.getElementById('liveColor');
     liveColorControl.addEventListener('change', function(){
       liveColor = this.value;
+      drawGrid();
     });
 
     deadColor = "FFFFFF" // Initialize
     var deadColorControl = document.getElementById('deadColor');
     deadColorControl.addEventListener('change', function(){
       deadColor = this.value;
+      drawGrid();
     });
 
     borderColor = "000000" // Initialize
     var borderColorControl = document.getElementById('borderColor');
     borderColorControl.addEventListener('change', function(){
       borderColor = this.value;
+      drawGrid();
     });
 
 
@@ -169,7 +176,11 @@ function cleanGrid() {
 
 function drawGrid() {
     clear();
-    stroke("#"+ borderColor);
+    if(borderControl.checked) {
+        stroke("#"+ borderColor);
+    } else {
+        noStroke();
+    }
     for (var i = 0; i < xitems; i++) {
         for(var j = 0; j < yitems; j++) {
             if(grid[i][j] == 0) {
@@ -250,7 +261,11 @@ function mouseCheck() {
         var j = floor(mouseY/resolution);
         if (i > 0 && j > 0 && i < xitems && j < yitems) {
             grid[i][j] = 1;
-            stroke("#"+ borderColor);
+            if(borderControl.checked) {
+                stroke("#"+ borderColor);
+            } else {
+                noStroke();
+            }
             fill("#"+liveColor);
             rect(i*resolution, j*resolution, resolution, resolution);
         }
